@@ -1,0 +1,23 @@
+MIDI/Pitch version 0.1
+======================
+
+Converts MIDI pitches and note names into each other.
+
+Please see Pitch.pm for the module documentation
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2004 Christian Renz <crenz@web42.com>
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself. 
+
