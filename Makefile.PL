@@ -10,3 +10,36 @@ WriteMakefile(
       (ABSTRACT_FROM  => 'lib/MIDI/Pitch.pm', # retrieve abstract from module
        AUTHOR         => 'Christian <crenz@web42.com>') : ()),
 );
+
+package MY;
+
+use Config;
+
+sub test {
+    my $inherited = shift->SUPER::test(@_);
+    eval { require Devel::Cover; };
+
+    if ($@) {
+        print "Devel::Cover not installed, will not collect test coverage statistics.\n";
+        return $inherited;
+    }
+
+    if ($^O !~ /^(darwin|linux|.*bsd)/i) {
+        print "Devel::Cover installed, but will not collect test coverage statistics on this platform.\n";
+        return $inherited;
+    }
+
+    print "Devel::Cover found, will collect test coverage statistics.\n";
+
+    $inherited =~ s|^test(\s+::?)|test_old$1|m;
+   $inherited .= <<EOT;
+
+test$1
+\tcover -delete
+\tHARNESS_PERL_SWITCHES=-MDevel::Cover $Config{'make'} test_old
+\tcover
+
+EOT
+
+    return $inherited;
+}

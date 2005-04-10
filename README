@@ -1,7 +1,7 @@
-MIDI/Pitch version 0.2
+MIDI/Pitch version 0.3
 ======================
 
-Converts MIDI pitches and note names into each other.
+MIDI::Pitch - Converts MIDI pitches, note names and frequencies into each other
 
 Please see Pitch.pm for the module documentation
 
@@ -14,7 +14,10 @@ To install this module type the following:
    make test
    make install
 
-COPYRIGHT AND LICENCE
+If Devel::Cover is installed and you are on Darwin, Linux or a *BSD, make test
+will print test coverage statistics.
+
+COPYRIGHT AND LICENSE
 
 Copyright 2004-2005 by Christian Renz <crenz@web42.com>. All Rights Reserved.
 

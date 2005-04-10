@@ -9,13 +9,13 @@ use vars qw($VERSION @ISA @EXPORT_OK
 
 @ISA = qw(Exporter);
 @EXPORT_OK = qw(name2pitch pitch2name freq2pitch pitch2freq basefreq);
-$VERSION = '0.2';
+$VERSION = '0.3';
 
 $base_freq = 440;
 
 =head1 NAME
 
-MIDI::Pitch - Converts MIDI pitches and note names into each other
+MIDI::Pitch - Converts MIDI pitches, note names and frequencies into each other
 
 =head1 SYNOPSIS
 
