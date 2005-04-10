@@ -5,11 +5,13 @@ use strict;
 
 require Exporter;
 use vars qw($VERSION @ISA @EXPORT_OK
-            %name2pitch_lut @pitch2name_table);
+            %name2pitch_lut @pitch2name_table $base_freq);
 
 @ISA = qw(Exporter);
-@EXPORT_OK = qw(name2pitch pitch2name);
-$VERSION = '0.1';
+@EXPORT_OK = qw(name2pitch pitch2name freq2pitch pitch2freq basefreq);
+$VERSION = '0.2';
+
+$base_freq = 440;
 
 =head1 NAME
 
@@ -17,9 +19,10 @@ MIDI::Pitch - Converts MIDI pitches and note names into each other
 
 =head1 SYNOPSIS
 
-  use MIDI::Pitch;
+  use MIDI::Pitch qw(name2pitch pitch2name freq2pitch pitch2freq basefreq);
 
-  # see below
+  my $pitch = name2pitch($name);
+  
   
 =head1 DESCRIPTION
 
@@ -39,7 +42,9 @@ C<G9>.
 
 =head1 FUNCTIONS
 
-=head2 name2pitch($name)
+=head2 name2pitch
+
+  my $pitch = name2pitch($name);
 
 Converts a note name into a pitch. 
 
@@ -78,7 +83,9 @@ sub name2pitch {
     return $p;
 }
 
-=head2 pitch2name($pitch)
+=head2 pitch2name
+
+  my $name = pitch2name($pitch);
 
 Converts a pitch between 0 and 127 into a note name. pitch2name returns
 the lowercase version with a sharp, if necessary (e.g. it will return
@@ -92,14 +99,72 @@ the lowercase version with a sharp, if necessary (e.g. it will return
 sub pitch2name {
     my $p = shift;
     
-    return undef unless defined $p && $p =~ /^\d+$/ && $p >= 0 && $p <= 127;
+    return undef unless defined $p && $p =~ /^-?(\d+|\d*(\.\d+))$/;
+    $p = int($p + .5 * ($p <=> 0));
+    return undef unless $p >= 0 && $p <= 127;
     
     return $pitch2name_table[$p % 12] . (int($p / 12) - 1);
+}
+
+=head2 freq2pitch
+
+  my $pitch = freq2pitch($440);
+
+Converts a frequency >= 0 Hz to a pitch, using the base frequency set.
+
+=cut
+
+sub freq2pitch {
+    my $f = shift;
+    
+    return undef unless defined $f && $f =~ /^(\d+|\d*(\.\d+))$/ && $f > 0;
+    return 69 + 12 * log($f/$base_freq)/log(2);
+}
+
+=head2 pitch2freq
+
+  my $freq = pitch2freq(69);
+
+Converts a pitch to a frequency, using the base frequency set.
+
+=cut
+
+sub pitch2freq {
+    my $p = shift;
+    
+    return undef unless defined $p && $p =~ /^-?(\d+|\d*(\.\d+))$/;
+    return exp((($p - 69) / 12) * log(2)) * $base_freq;
+}
+
+=head2 basefreq
+
+  my $basefreq = basefreq;
+  basefreq(432);
+
+Sets/returns current base frequency for frequency/pitch conversion. The
+standard base frequency set is 440 (Hz). Note that the base frequency
+does not affect the pitch/name conversion.
+
+=cut
+
+sub basefreq {
+    my $f = shift;
+
+    $base_freq = $f if defined $f && $f > 0;
+    return $base_freq;
 }
 
 =head1 HISTORY
 
 =over 8
+
+=item 0.2
+
+Added pitch rounding (60.49 and 59.5 will both be considered 60/'C4').
+
+Added frequency/pitch conversion.
+
+Added POD tests.
 
 =item 0.1
 
@@ -117,11 +182,11 @@ L<http://www.harmony-central.com/MIDI/Doc/table2.html>
 
 =head1 AUTHOR
 
-Christian Renz, E<lt>crenz@web42.comE<gt>
+Christian Renz, E<lt>crenz @ web42.comE<gt>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright 2004 by Christian Renz
+Copyright 2004-2005 by Christian Renz E<lt>crenz @ web42.comE<gt>. All Rights Reserved.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

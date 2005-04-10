@@ -4,9 +4,9 @@ use ExtUtils::MakeMaker;
 # the contents of the Makefile that is written.
 WriteMakefile(
     NAME              => 'MIDI::Pitch',
-    VERSION_FROM      => 'Pitch.pm', # finds $VERSION
-    PREREQ_PM         => {}, # e.g., Module::Name => 1.1
+    VERSION_FROM      => 'lib/MIDI/Pitch.pm',
+    PREREQ_PM         => { Test::More => 0},
     ($] >= 5.005 ?     ## Add these new keywords supported since 5.005
-      (ABSTRACT_FROM  => 'Pitch.pm', # retrieve abstract from module
-       AUTHOR         => 'Christian <crenz@nonet>') : ()),
+      (ABSTRACT_FROM  => 'lib/MIDI/Pitch.pm', # retrieve abstract from module
+       AUTHOR         => 'Christian <crenz@web42.com>') : ()),
 );

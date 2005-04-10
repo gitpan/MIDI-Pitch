@@ -1,8 +1,12 @@
 Makefile.PL
 MANIFEST
-Pitch.pm
+lib/MIDI/Pitch.pm
 README
-t/1-use.t
-t/2-pitch.t
-
+t/00-load.t
+t/01-pitch.t
+t/02-rounded-pitch.t
+t/03-freq.t
+t/04-base-freq.t
+t/pod-coverage.t
+t/pod.t
 META.yml                                 Module meta-data (added by MakeMaker)

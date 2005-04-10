@@ -1,4 +1,4 @@
-MIDI/Pitch version 0.1
+MIDI/Pitch version 0.2
 ======================
 
 Converts MIDI pitches and note names into each other.
@@ -16,7 +16,7 @@ To install this module type the following:
 
 COPYRIGHT AND LICENCE
 
-Copyright (C) 2004 Christian Renz <crenz@web42.com>
+Copyright 2004-2005 by Christian Renz <crenz@web42.com>. All Rights Reserved.
 
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself. 

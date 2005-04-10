@@ -1,10 +1,7 @@
-use Test;
-
-BEGIN { plan tests => 15 + 9 + 11 + 128*2 };
+use Test::More tests => 15 + 9 + 11 + 128*2;
 
 # test conversion to pitch
 
-# use MIDI::Pitch qw(name2pitch freq2pitch);
 use MIDI::Pitch qw(name2pitch pitch2name);
 
 # Test some special cases ------------------------------------------------
