@@ -5,11 +5,12 @@ use strict;
 
 require Exporter;
 use vars qw($VERSION @ISA @EXPORT_OK
-            %name2pitch_lut @pitch2name_table $base_freq);
+  %name2pitch_lut @pitch2name_table $base_freq);
 
-@ISA = qw(Exporter);
-@EXPORT_OK = qw(name2pitch pitch2name freq2pitch pitch2freq basefreq);
-$VERSION = '0.3';
+@ISA       = qw(Exporter);
+@EXPORT_OK =
+  qw(name2pitch pitch2name freq2pitch pitch2freq basefreq name2freq freq2name);
+$VERSION = '0.4';
 
 $base_freq = 440;
 
@@ -75,9 +76,9 @@ Converts a note name into a pitch.
 
 sub name2pitch {
     my $n = shift;
-    
+
     return undef unless defined $n && lc($n) =~ /^([a-g][b#]?)(-?\d\d?)$/;
-    
+
     my $p = $name2pitch_lut{$1} + ($2 + 1) * 12;
     return undef unless $p >= 0 && $p <= 127;
     return $p;
@@ -93,16 +94,16 @@ the lowercase version with a sharp, if necessary (e.g. it will return
 
 =cut
 
-@pitch2name_table = ('c', 'c#', 'd', 'd#', 'e', 'f',
-                     'f#', 'g', 'g#', 'a', 'a#', 'b');
+@pitch2name_table =
+  ('c', 'c#', 'd', 'd#', 'e', 'f', 'f#', 'g', 'g#', 'a', 'a#', 'b');
 
 sub pitch2name {
     my $p = shift;
-    
+
     return undef unless defined $p && $p =~ /^-?(\d+|\d*(\.\d+))$/;
     $p = int($p + .5 * ($p <=> 0));
     return undef unless $p >= 0 && $p <= 127;
-    
+
     return $pitch2name_table[$p % 12] . (int($p / 12) - 1);
 }
 
@@ -116,9 +117,9 @@ Converts a frequency >= 0 Hz to a pitch, using the base frequency set.
 
 sub freq2pitch {
     my $f = shift;
-    
+
     return undef unless defined $f && $f =~ /^(\d+|\d*(\.\d+))$/ && $f > 0;
-    return 69 + 12 * log($f/$base_freq)/log(2);
+    return 69 + 12 * log($f / $base_freq) / log(2);
 }
 
 =head2 pitch2freq
@@ -131,9 +132,33 @@ Converts a pitch to a frequency, using the base frequency set.
 
 sub pitch2freq {
     my $p = shift;
-    
+
     return undef unless defined $p && $p =~ /^-?(\d+|\d*(\.\d+))$/;
     return exp((($p - 69) / 12) * log(2)) * $base_freq;
+}
+
+=head2 name2freq
+
+    my $freq = name2freq('c2');
+
+This is just an alias for C<pitch2freq(name2pitch($x))>.
+
+=cut
+
+sub name2freq {
+    return pitch2freq(name2pitch(@_));
+}
+
+=head2 freq2name
+
+    my $name = freq2name('c2');
+
+This is just an alias for C<pitch2name(freq2pitch($x))>.
+
+=cut
+
+sub freq2name {
+    return pitch2name(freq2pitch(@_));
 }
 
 =head2 basefreq
