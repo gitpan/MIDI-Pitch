@@ -9,8 +9,8 @@ use vars qw($VERSION @ISA @EXPORT_OK
 
 @ISA       = qw(Exporter);
 @EXPORT_OK =
-  qw(name2pitch pitch2name freq2pitch pitch2freq basefreq name2freq freq2name);
-$VERSION = '0.4';
+  qw(name2pitch pitch2name freq2pitch pitch2freq basefreq name2freq freq2name findsemitone);
+$VERSION = '0.5';
 
 $base_freq = 440;
 
@@ -161,6 +161,36 @@ sub freq2name {
     return pitch2name(freq2pitch(@_));
 }
 
+=head2 findsemitone {
+
+    my $pitch = findsemitone('d#', 60);
+
+Finds the nearest pitch that expresses the semitone given around the
+pitch given. The example above would return 63, since the d# at pitch 63 is
+nearer to 60 than the d# at pitch 51.
+
+If there are two possibilities for the nearest pitch, findsemitone returns
+the lower one.
+
+=cut
+
+sub findsemitone {
+    my ($semitone, $pitch) = @_;
+
+    return undef unless defined $semitone && exists $name2pitch_lut{$semitone};
+    return undef
+      unless defined $pitch
+      && $pitch =~ /^\d+$/
+      && $pitch >= 0
+      && $pitch <= 127;
+
+    my $m = $pitch % 12;
+    my $result = $pitch - $m + $name2pitch_lut{$semitone};
+    $result += 12 if ($m % 12 > 6 && $result < 113);
+
+    return $result;
+}
+
 =head2 basefreq
 
   my $basefreq = basefreq;
@@ -182,6 +212,10 @@ sub basefreq {
 =head1 HISTORY
 
 =over 8
+
+=item 0.5
+
+Added findsemitone function
 
 =item 0.2
 
