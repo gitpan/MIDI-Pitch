@@ -10,7 +10,7 @@ use vars qw($VERSION @ISA @EXPORT_OK
 @ISA       = qw(Exporter);
 @EXPORT_OK =
   qw(name2pitch pitch2name freq2pitch pitch2freq basefreq name2freq freq2name findsemitone);
-$VERSION = '0.5';
+$VERSION = '0.6';
 
 $base_freq = 440;
 
@@ -38,7 +38,7 @@ L<http://www.harmony-central.com/MIDI/Doc/table2.html>):
     assignment.
 
 The note names are C<C>, C<C#>/C<Db>, C<D>, ..., followed by an octave
-number from -1 to 9. Thus, the valid notes ranges between C<C-1> and
+number from -1 to 9. Thus, the valid notes range between C<C-1> and
 C<G9>.
 
 =head1 FUNCTIONS
@@ -169,6 +169,9 @@ Finds the nearest pitch that expresses the semitone given around the
 pitch given. The example above would return 63, since the d# at pitch 63 is
 nearer to 60 than the d# at pitch 51.
 
+The semitone can be specified in the same format as a note name (without 
+the octave) or as an integer between 0 and 11.
+
 If there are two possibilities for the nearest pitch, findsemitone returns
 the lower one.
 
@@ -177,16 +180,22 @@ the lower one.
 sub findsemitone {
     my ($semitone, $pitch) = @_;
 
-    return undef unless defined $semitone && exists $name2pitch_lut{$semitone};
+    return undef unless defined $semitone &&
+      (($semitone =~ /^\d+$/
+      && $semitone >= 0
+      && $semitone <= 11) || exists $name2pitch_lut{$semitone});
     return undef
       unless defined $pitch
       && $pitch =~ /^\d+$/
       && $pitch >= 0
       && $pitch <= 127;
 
+    $semitone = $name2pitch_lut{$semitone} if exists $name2pitch_lut{$semitone};
+
     my $m = $pitch % 12;
-    my $result = $pitch - $m + $name2pitch_lut{$semitone};
-    $result += 12 if ($m % 12 > 6 && $result < 113);
+    my $result = $pitch - $m + $semitone;
+    $result += 12 if ($pitch - $result > 6 && $result < 116);
+    $result -= 12 if ($result - $pitch > 6 && $result > 11);
 
     return $result;
 }
@@ -212,6 +221,11 @@ sub basefreq {
 =head1 HISTORY
 
 =over 8
+
+=item 0.6
+
+findsemitone now also understands semitones specified as integers between 0 and 11.
+Fixed bug in findsemitone.
 
 =item 0.5
 
