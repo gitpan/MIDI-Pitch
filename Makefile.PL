@@ -17,6 +17,10 @@ use Config;
 
 sub test {
     my $inherited = shift->SUPER::test(@_);
+    unless ($ENV{TEST_COVERAGE}) {
+	print "Set TEST_COVERAGE=1 in your environment to test coverage using Devel::Cover.\n";
+	return $inherited;
+    }
     eval { require Devel::Cover; };
 
     if ($@) {

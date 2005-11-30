@@ -10,7 +10,7 @@ use vars qw($VERSION @ISA @EXPORT_OK
 @ISA       = qw(Exporter);
 @EXPORT_OK =
   qw(name2pitch pitch2name freq2pitch pitch2freq basefreq name2freq freq2name findsemitone);
-$VERSION = '0.6';
+$VERSION = '0.7';
 
 $base_freq = 440;
 
@@ -221,6 +221,10 @@ sub basefreq {
 =head1 HISTORY
 
 =over 8
+
+=item 0.7
+
+Added Changes file.
 
 =item 0.6
 
